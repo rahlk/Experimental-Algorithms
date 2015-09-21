@@ -38,7 +38,7 @@ This report is organized as follows. The following section presents a brief desc
 \section{Evolutionary Algorithms}
 \label{algos}
 
-An Evolution Optimization begins its search with a population of solutions usually created at random within a specified lower and upper bound on each variable. If bounds are not supplied in an optimization problem, suitable values can be assumed only for the initialization purpose. Thereafter, the EO procedure enters into an iterative operation of updating the current population to create a new population by the use of four main operators: selection, crossover, mutation and elite-preservation. The operation stops when one or more pre-specified termination criteria are met. The following evolutionary algorithms shall be parallelized.
+An Evolutionary Optimization(EO) begins its search with a population of solutions usually created at random within a specified lower and upper bound on each variable. If bounds are not supplied in an optimization problem, suitable values can be assumed only for the initialization purpose. Thereafter, the EO procedure enters into an iterative operation of updating the current population to create a new population by the use of four main operators: selection, crossover, mutation and elite-preservation. The operation stops when one or more pre-specified termination criteria are met. The following evolutionary algorithms shall be parallelized.
 \begin{enumerate}
 \item \textbf{Differential Evolution (DE):} Differential evolution is a stochastic and population based optimization technique that iteratively tries to improve a candidate solution with respect to measure of quality. An objective function is defined in a selected region of the problem space. A candidate solution is then optimized to minimize/maximize the objective function based on the nature of the problem. Differential evolution offers the following advantages:
 
@@ -56,6 +56,33 @@ An Evolution Optimization begins its search with a population of solutions usual
 \item It offers a very concise representation of the problem space due to WHERE.
 \end{itemize}
 \end{enumerate}
+
+\section{Optimization Problem}
+\label{problem}
+
+Multi-objective Evolutionary Algorithms(MOEA) require scalable test problems that help test its efficiency. Our chosen test problem is a mathematical test problem \textbf{DTLZ2} \cite{debMOEA02}, which was formulated by \textit{Kalyanmoy \textbf{D}eb}, \textit{Lothar \textbf{T}hiele}, \textit{Marco \textbf{L}aumans} and \textit{Eckhart \textbf{Z}itzler}. 
+
+\textbf{Decisions} : DTLZ2 has 30 decisions between 0 and 1.
+\[0 \leq {x}_{i} \leq 1 \ \ \ \ where \ \  i = 1,2 ,3 .... 30\]
+
+\textbf{Objectives} : Although DTLZ2 allows as to generate upto n-1 objectives where n is the number of decisions, we choose to limit the number of objectives to 3 since we can model the objectives better to visualize the pareto frontier. Limiting the number of objectives also controls the domination pressure. All the three objectives needs to be minimized. The objectives are defined as follows:
+\[{f}_{1}(x) = (1+g({x}_{M}))\cos({x}_{1} \pi/2)....\cos({x}_{M-1} \pi/2)\]
+\[{f}_{2}(x) = (1+g({x}_{M}))\cos({x}_{1} \pi/2)....\cos({x}_{M-1} \pi/2)\]
+\[{f}_{3}(x) = (1+g({x}_{M}))\sin({x}_{1} \pi/2)\]
+\[where \ \ \ \ g({x}_{M}) = \sum_{x \in {x}_{M}} (x_i - 0.5)^2 \]
+
+\textbf{Optimal Solutions} : The pareto optimal solutions corresponds to the decisions \(x_i = 0.5\) and all objective function values must satisfy \(\sum_{m=1}^M (f_m)^2 = 1\). Figure \ref{fig:problem} shows the pareto frontier that represents the optimal solutions of DTLZ2.
+
+\begin{figure}
+\centering
+\includegraphics{img/dtlz2_pareto.png}
+\caption{Pareto Frontier of DTLZ2}
+\label{fig:problem}
+\end{figure}
+
+
+
+
 
 \section{Measures}
 \label{measures}
