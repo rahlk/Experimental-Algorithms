@@ -127,4 +127,39 @@ def sin(val):
   """
   return math.sin(val)
 
+class Point(O):
+
+  def __init__(self, decisions, problem=None):
+    """
+    Represents a point in the frontier for NSGA
+    :param decisions: Set of decisions
+    :param problem: Instance of the problem
+    :param do_eval: Flag to check if evaluation has to be performed
+    """
+    O.__init__(self)
+    self.decisions = decisions
+    if problem:
+      self.objectives = problem.evaluate(decisions)
+    else:
+      self.objectives = []
+
+  def clone(self):
+    """
+    Method to clone a point
+    :return:
+    """
+    new = Point(self.decisions)
+    new.objectives = self.objectives
+    return new
+
+  def evaluate(self, problem):
+    """
+    Evaluate a point
+    :param problem: Problem used to evaluate
+    """
+    if not self.objectives:
+      self.objectives = problem.evaluate(self.decisions)
+
+  def __eq__(self, other):
+    return self.decisions == other.decisions
 

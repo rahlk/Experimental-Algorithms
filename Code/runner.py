@@ -1,10 +1,12 @@
 from __future__ import print_function, division
 from problems.dtlz2 import DTLZ2
+from algorithms.serial.gale.gale import GALE
 
 if __name__ == "__main__":
   model = DTLZ2()
-  population = model.populate(20)
-  for one in population:
-    print("")
-    print("Dec : ", one)
-    print("Obj : ", model.evaluate(one))
+  gale = GALE(model)
+  goods = gale.run()
+  #print(gale.convergence(goods))
+  #print(gale.diversity(goods))
+  gale.solution_range(goods)
+

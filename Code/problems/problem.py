@@ -128,3 +128,55 @@ class Problem(O):
     :return:
     """
     return None
+
+  def dist(self, one, two, one_norm = True, two_norm = True, is_obj = True):
+    """
+    Returns normalized euclidean distance between one and two
+    :param one - Point A
+    :param two - Point B
+    :param one_norm - If A has to be normalized
+    :param two_norm - If B has to be normalized
+    :param is_obj - If the points are objectives or decisions
+    """
+    norm = self.norm_objectives if is_obj else self.norm_decisions
+    one_norm = norm(one) if one_norm else one
+    two_norm = norm(two) if two_norm else two
+    delta = 0
+    count = 0
+    for i,j in zip(one_norm, two_norm):
+      delta += (i-j) ** 2
+      count += 1
+    return (delta/count) ** 0.5
+
+  def manhattan_dist(self, one, two, one_norm = True, two_norm = True, is_obj = True):
+    """
+    Returns manhattan distance between one and two
+    :param one - Point A
+    :param two - Point B
+    :param one_norm - If A has to be normalized
+    :param two_norm - If B has to be normalized
+    :param is_obj - If the points are objectives or decisions
+    """
+    norm = self.norm_objectives if is_obj else self.norm_decisions
+    one_norm = norm(one) if one_norm else one
+    two_norm = norm(two) if two_norm else two
+    delta = 0
+    for i, j in zip(one_norm, two_norm):
+      delta += abs(i -j)
+    return delta
+
+  def directional_weights(self):
+    """
+    Method that returns an array of weights
+    based on the objective. If objective is
+    to be maximized, return 1 else return 0
+    :return:
+    """
+    weights = []
+    for obj in self.objectives:
+      # w is negative when we are maximizing that objective
+      if obj.to_minimize:
+        weights.append(1)
+      else:
+        weights.append(-1)
+    return weights
