@@ -30,17 +30,14 @@ def params(**d):
   """
   RTFM please - http://scikit-learn.org/stable/modules/generated/sklearn.svm.LinearSVC.html#sklearn.svm.LinearSVC
   """
-  return o(
-    C = (1e-2,1, float), # Penalty parameter C of the error term.
-    tol = (1e-2,1, float), # Tolerance for stopping criteria.
-    fit_intercept=(True, False, bool), # Whether to calculate the intercept for this model.
-    # If set to false, no intercept will be used in calculations (e.g. data is expected to be already centered).
-    scaling = (1e-2,1, float),
-    max_iter = (1, 1e4, int),
-    shrinking = (True, False, bool)).update(**d)
-    # degree = (2,10,int),
-    # gamma = (0,1,float),
-    # kernel = ('linear', 'rbf', 'poly', 'sigmoid', str),
+  # return o(
+  #   C = (1e-2,1, float), # Penalty parameter C of the error term.
+  #   tol = (1e-2,1, float), # Tolerance for stopping criteria.
+  #   fit_intercept=(True, False, bool), # Whether to calculate the intercept for this model.
+  #   # If set to false, no intercept will be used in calculations (e.g. data is expected to be already centered).
+  #   scaling = (1e-2,1, float),
+  #   max_iter = (1, 1e4, int),
+  #   shrinking = (True, False, bool)).update(**d)
 
 def settings(**d):
   return o(
@@ -206,12 +203,12 @@ class tuneSVM(object):
   def indep(i):
     P = params()
     return [
-        P.C, # Penalty parameter C of the error term.
-        P.tol, # Tolerance for stopping criteria.
-        P.fit_intercept, # Whether to calculate the intercept for this model.
-        # If set to false, no intercept will be used in calculations (e.g. data is expected to be already centered).
-        P.scaling,
-        P.max_iter]
+        # P.C, # Penalty parameter C of the error term.
+        # P.tol, # Tolerance for stopping criteria.
+        # P.fit_intercept, # Whether to calculate the intercept for this model.
+        # # If set to false, no intercept will be used in calculations (e.g. data is expected to be already centered).
+        # P.scaling,
+        # P.max_iter]
 
 def _test(train, test):
   m = tuneSVM(train, test)
