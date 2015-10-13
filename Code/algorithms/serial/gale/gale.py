@@ -190,7 +190,7 @@ class GALE(Algorithm):
     return mutants + Node.format(pop), 0
 
 def _test():
-  from problems.dtlz2 import DTLZ2
+  from problems.dtlz.dtlz2 import DTLZ2
   o = DTLZ2()
   gale = GALE(o)
   gale.run()

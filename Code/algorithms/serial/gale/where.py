@@ -342,7 +342,7 @@ class Node(BinaryTree):
     return out
 
 def _test():
-  from problems.dtlz2 import DTLZ2
+  from problems.dtlz.dtlz2 import DTLZ2
   o = DTLZ2()
   pop = o.populate(100)
   node = Node(o, Node.format(pop), 100).divide(sqrt(pop))
