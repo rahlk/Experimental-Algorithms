@@ -102,4 +102,4 @@ class Algorithm(O):
     return sum([math.exp((x2i - x1i)/o) for x1i, x2i in zip(x1,x2)])/o
 
   def run(self, init_pop=None):
-    pass
+    assert False, "Algorithm is a base class. Child classes should extend it and implement it."

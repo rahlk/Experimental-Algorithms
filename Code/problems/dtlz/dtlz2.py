@@ -5,6 +5,8 @@ Our version of DTLZ2 has 3 objectives. The ideal pareto
 frontier lies on the first octant of radius 1
 """
 from __future__ import print_function, division
+import sys, os
+sys.path.append(os.path.abspath("."))
 from problems.problem import *
 from utils.lib import *
 
@@ -39,10 +41,11 @@ class DTLZ2(Problem):
         objs[i] *= sin(0.5 * PI * decisions[n_objs - i - 1])
     return objs
 
-  def get_pareto_front(self):
+  @staticmethod
+  def get_pareto_front():
     rows = []
-    with open("DTLZ2_3D.csv", "r") as f:
+    with open("problems/dtlz/DTLZ2_3D.csv", "r") as f:
       lines = f.readlines()
       for line in lines:
         rows.append([float(pt) for pt in line.split(",")])
-    print(rows)
+    return rows

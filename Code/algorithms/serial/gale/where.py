@@ -1,6 +1,5 @@
 from __future__ import print_function, division
-import sys
-import os
+import sys, os
 sys.path.append(os.path.abspath("."))
 from binary_tree import BinaryTree
 from utils.lib import *

@@ -1,11 +1,17 @@
 from __future__ import print_function, division
 import sys, os
 sys.path.append(os.path.abspath("."))
+from mpi4py import MPI
 from utils.lib import *
 from algorithms.serial.algorithm import Algorithm
-from where import Node, sqrt
+from algorithms.serial.gale.where import Node, sqrt
 
 __author__ = 'panzer'
+
+COMM = MPI.COMM_WORLD
+
+RANK = COMM.rank
+SIZE = COMM.size
 
 def settings():
   """
@@ -14,24 +20,14 @@ def settings():
   """
   return O(
     pop_size        = 100,
-    gens            = 10,
+    gens            = 12,
     allowDomination = True,
     gamma           = 0.15
   )
 
 class GALE(Algorithm):
-  """
-  .. [Krall2015] Krall, Menzies et.all, "
-      GALE: Geometric Active Learning for Search-Based Software Engineering"
 
-  Check References folder for the paper
-  """
   def __init__(self, problem, gens=settings().gens):
-    """
-    Initialize GALE algorithm
-    :param problem: Instance of the problem
-    :param gens: Max number of generations
-    """
     Algorithm.__init__(self, 'GALE', problem)
     self.select = self._select
     self.evolve = self._evolve
@@ -39,66 +35,7 @@ class GALE(Algorithm):
     self.gens = gens
 
   def run(self, init_pop=None):
-    if init_pop is None:
-      init_pop = self.problem.populate(settings().pop_size)
-    population = Node.format(init_pop)
-    best_solutions = []
-    gen = 0
-    while gen < self.gens:
-      say(".")
-      total_evals = 0
-      # SELECTION
-      selectees, evals =  self.select(population)
-      solutions, evals = self.get_best(selectees)
-      best_solutions += solutions
-      total_evals += evals
-
-      # EVOLUTION
-      selectees, evals = self.evolve(selectees)
-      total_evals += evals
-
-      population, evals = self.recombine(selectees, settings().pop_size)
-      total_evals += evals
-      gen += 1
-    print("")
-    return best_solutions
-
-  def get_best(self, non_dom_leaves):
-    """
-    Return the best row from all the
-    non dominated leaves
-    :param non_dom_leaves:
-    :return:
-    """
-    bests = []
-    evals = 0
-    for leaf in non_dom_leaves:
-      east = leaf._pop[0]
-      west = leaf._pop[-1]
-      if not east.evaluated:
-        east.evaluate(self.problem)
-        evals += 1
-      if not west.evaluated:
-        west.evaluate(self.problem)
-        evals += 1
-      weights = self.problem.directional_weights()
-      weighted_west = [c*w for c,w in zip(west.objectives, weights)]
-      weighted_east = [c*w for c,w in zip(east.objectives, weights)]
-      objs = self.problem.objectives
-      west_loss = Algorithm.dominates_continuous(weighted_west,
-                        weighted_east,
-                        mins=[o.low for o in objs],
-                        maxs=[o.high for o in objs])
-      east_loss = Algorithm.dominates_continuous(weighted_east,
-                        weighted_west,
-                        mins=[o.low for o in objs],
-                        maxs=[o.high for o in objs])
-      if east_loss < west_loss:
-        bests.append(east)
-      else:
-        bests.append(west)
-    return bests, evals
-
+    pass
 
   def _select(self, pop):
     node = Node(self.problem, pop, settings().pop_size).divide(sqrt(pop))
@@ -191,11 +128,66 @@ class GALE(Algorithm):
       pop.append(self.problem.generate())
     return mutants + Node.format(pop), 0
 
-def _test():
-  from problems.dtlz.dtlz2 import DTLZ2
-  o = DTLZ2()
-  gale = GALE(o)
-  gale.run()
+  def get_best(self, non_dom_leaves):
+    """
+    Return the best row from all the
+    non dominated leaves
+    :param non_dom_leaves:
+    :return:
+    """
+    bests = []
+    evals = 0
+    for leaf in non_dom_leaves:
+      east = leaf._pop[0]
+      west = leaf._pop[-1]
+      if not east.evaluated:
+        east.evaluate(self.problem)
+        evals += 1
+      if not west.evaluated:
+        west.evaluate(self.problem)
+        evals += 1
+      weights = self.problem.directional_weights()
+      weighted_west = [c*w for c,w in zip(west.objectives, weights)]
+      weighted_east = [c*w for c,w in zip(east.objectives, weights)]
+      objs = self.problem.objectives
+      west_loss = Algorithm.dominates_continuous(weighted_west,
+                        weighted_east,
+                        mins=[o.low for o in objs],
+                        maxs=[o.high for o in objs])
+      east_loss = Algorithm.dominates_continuous(weighted_east,
+                        weighted_west,
+                        mins=[o.low for o in objs],
+                        maxs=[o.high for o in objs])
+      if east_loss < west_loss:
+        bests.append(east)
+      else:
+        bests.append(west)
+    return bests, evals
 
-if __name__ == "__main__":
-  _test()
+def run(algo):
+  gen = 0
+  best_solutions = []
+  population = Node.format(algo.problem.populate(settings().pop_size))
+  total_evals = 0
+  while gen < int(algo.gens/SIZE):
+    say(str(RANK)+" ")
+    selectees, evals =  algo.select(population)
+    solutions, evals = algo.get_best(selectees)
+    best_solutions += solutions
+    total_evals += evals
+
+    # EVOLUTION
+    selectees, evals = algo.evolve(selectees)
+    total_evals += evals
+
+    population, evals = algo.recombine(selectees, settings().pop_size)
+    total_evals += evals
+    gen += 1
+  if RANK == 0:
+    for i in range(1, SIZE):
+      best_solutions += COMM.recv(source=i)
+    # TODO - Process best solutions here
+    print("")
+    print(len(best_solutions))
+  else:
+    COMM.send(best_solutions, dest=0)
