@@ -187,7 +187,6 @@ def run(algo):
     for i in range(1, SIZE):
       best_solutions += COMM.recv(source=i)
     # TODO - Process best solutions here
-    print("")
-    print(len(best_solutions))
+    return best_solutions
   else:
     COMM.send(best_solutions, dest=0)
