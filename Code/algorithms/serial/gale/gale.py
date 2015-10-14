@@ -7,14 +7,14 @@ from where import Node, sqrt
 
 __author__ = 'panzer'
 
-def settings():
+def default_settings():
   """
   Default Settings for NSGA 3
   :return: default settings
   """
   return O(
     pop_size        = 100,
-    gens            = 10,
+    gens            = 250,
     allowDomination = True,
     gamma           = 0.15
   )
@@ -26,25 +26,25 @@ class GALE(Algorithm):
 
   Check References folder for the paper
   """
-  def __init__(self, problem, gens=settings().gens):
+  def __init__(self, problem, **settings):
     """
     Initialize GALE algorithm
     :param problem: Instance of the problem
     :param gens: Max number of generations
     """
-    Algorithm.__init__(self, 'GALE', problem)
+    Algorithm.__init__(self, GALE.__name__, problem)
     self.select = self._select
     self.evolve = self._evolve
     self.recombine = self._recombine
-    self.gens = gens
+    self.settings = default_settings().update(**settings)
 
   def run(self, init_pop=None):
     if init_pop is None:
-      init_pop = self.problem.populate(settings().pop_size)
+      init_pop = self.problem.populate(self.settings.pop_size)
     population = Node.format(init_pop)
     best_solutions = []
     gen = 0
-    while gen < self.gens:
+    while gen < self.settings.gens:
       say(".")
       total_evals = 0
       # SELECTION
@@ -57,7 +57,7 @@ class GALE(Algorithm):
       selectees, evals = self.evolve(selectees)
       total_evals += evals
 
-      population, evals = self.recombine(selectees, settings().pop_size)
+      population, evals = self.recombine(selectees, self.settings.pop_size)
       total_evals += evals
       gen += 1
     print("")
@@ -101,7 +101,7 @@ class GALE(Algorithm):
 
 
   def _select(self, pop):
-    node = Node(self.problem, pop, settings().pop_size).divide(sqrt(pop))
+    node = Node(self.problem, pop, self.settings.pop_size).divide(sqrt(pop))
     non_dom_leafs = node.nonpruned_leaves()
     all_leafs = node.leaves()
 
@@ -116,7 +116,7 @@ class GALE(Algorithm):
 
   def _evolve(self, selected):
     evals = 0
-    GAMMA = settings().gamma
+    GAMMA = self.settings.gamma
     for leaf in selected:
       #Poles
       east = leaf._pop[0]
@@ -193,7 +193,7 @@ class GALE(Algorithm):
 
 def _test():
   from problems.dtlz.dtlz2 import DTLZ2
-  o = DTLZ2()
+  o = DTLZ2(3)
   gale = GALE(o)
   gale.run()
 

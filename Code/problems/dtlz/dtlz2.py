@@ -22,7 +22,7 @@ class DTLZ2(Problem):
     if n is None:
       n = DTLZ2.default_decision_count(m)
     self.decisions = [Decision("x"+str(i+1), 0, 1) for i in range(n)]
-    self.objectives = [Objective("f"+str(index+1), True) for index in range(m)]
+    self.objectives = [Objective("f"+str(index+1), True, 0, 1000) for index in range(m)]
 
   @staticmethod
   def default_decision_count(m):
@@ -41,8 +41,7 @@ class DTLZ2(Problem):
         objs[i] *= sin(0.5 * PI * decisions[n_objs - i - 1])
     return objs
 
-  @staticmethod
-  def get_pareto_front():
+  def get_ideal_objectives(self):
     rows = []
     with open("problems/dtlz/DTLZ2_3D.csv", "r") as f:
       lines = f.readlines()

@@ -95,6 +95,7 @@ class Algorithm(O):
     """
     #normalize if mins and maxs are given
     if mins and maxs:
+
       x1 = [norm(x, mins[i], maxs[i]) for i,x in enumerate(x1)]
       x2 = [norm(x, mins[i], maxs[i]) for i,x in enumerate(x2)]
 
