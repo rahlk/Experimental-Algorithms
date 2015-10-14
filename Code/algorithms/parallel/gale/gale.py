@@ -20,7 +20,7 @@ def settings():
   """
   return O(
     pop_size        = 100,
-    gens            = 12,
+    gens            = 100,
     allowDomination = True,
     gamma           = 0.15
   )
@@ -33,9 +33,6 @@ class GALE(Algorithm):
     self.evolve = self._evolve
     self.recombine = self._recombine
     self.gens = gens
-
-  def run(self, init_pop=None):
-    pass
 
   def _select(self, pop):
     node = Node(self.problem, pop, settings().pop_size).divide(sqrt(pop))
@@ -164,7 +161,7 @@ class GALE(Algorithm):
         bests.append(west)
     return bests, evals
 
-def run(algo):
+def run(algo, init_pop=None):
   gen = 0
   best_solutions = []
   population = Node.format(algo.problem.populate(settings().pop_size))
@@ -187,6 +184,7 @@ def run(algo):
     for i in range(1, SIZE):
       best_solutions += COMM.recv(source=i)
     # TODO - Process best solutions here
+    print()
     return best_solutions
   else:
     COMM.send(best_solutions, dest=0)

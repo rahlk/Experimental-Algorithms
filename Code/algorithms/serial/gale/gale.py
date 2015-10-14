@@ -14,7 +14,7 @@ def default_settings():
   """
   return O(
     pop_size        = 100,
-    gens            = 250,
+    gens            = 100,
     allowDomination = True,
     gamma           = 0.15
   )
