@@ -40,14 +40,14 @@ def _run_serial():
   times, convs, dives = [], [], []
   for i in range(settings.runs):
     model = DTLZ2(3)
-    gale = GALE_S(model)
+    algo = DE_S(model)
     start = clock()
     print(i)
-    goods = gale.run()
+    goods = algo.run()
     times.append(clock() - start)
-    convs.append(gale.convergence(goods))
-    dives.append(gale.diversity(goods))
-    gale.solution_range(goods)
+    convs.append(algo.convergence(goods))
+    dives.append(algo.diversity(goods))
+    algo.solution_range(goods)
   report(times, "Time Taken")
   report(convs, "Convergence")
   report(dives, "Diversity")
@@ -64,4 +64,4 @@ def _run_once():
   de.solution_range(goods)
 
 if __name__ == "__main__":
-  _run_once()
+  _run_serial()
