@@ -1,0 +1,158 @@
+\documentclass[conference]{IEEEtran}
+%future work: local patch operator
+%complexity
+\usepackage{balance}
+\usepackage{subfig}
+\usepackage{wrapfig}
+\usepackage{amsmath}
+\usepackage{url}
+\usepackage{pifont}
+\pagenumbering{gobble}
+%\usepackage{times}
+\usepackage{rotating}
+%\usepackage{balance} 
+\usepackage{color, colortbl}
+\usepackage{graphicx}
+\usepackage{algorithmicx}
+\usepackage[running]{lineno}
+\usepackage{program}
+\usepackage{cite}
+\usepackage{alltt}
+\usepackage{balance}
+\newcommand{\eq}[1]{Equation~\ref{eq:#1}}
+\newcommand{\bi}{\begin{itemize}}
+	\newcommand{\ei}{\end{itemize}}
+\newcommand{\be}{\begin{enumerate}}
+	\newcommand{\ee}{\end{enumerate}}
+\newcommand{\tion}[1]{\textsection\ref{sec:#1}}
+\newcommand{\fig}[1]{Figure~\ref{fig:#1}}
+\definecolor{lightgray}{gray}{0.975}
+\usepackage{fancyvrb}
+\usepackage{stfloats}
+\usepackage{multirow}
+\usepackage{listings}
+\usepackage{amsmath}  
+\DeclareMathOperator*{\argmin}{arg\,min} 
+\DeclareMathOperator*{\argmax}{arg\,max} 
+%\usepackage[usenames]{xcolor}
+\bibliographystyle{unsrt}
+
+
+
+\usepackage{color}
+\newcommand{\colorrule}[1]{\begingroup\color{#1}\hrule\endgroup}
+
+\definecolor{darkgreen}{rgb}{0,0.3,0}
+
+\usepackage[table]{xcolor}
+\definecolor{Gray}{rgb}{0.88,1,1}
+\definecolor{Gray}{gray}{0.85}
+\definecolor{Blue}{RGB}{0,29,193}
+\newcommand{\G}{\cellcolor{green}}
+\newcommand{\Y}{\cellcolor{yellow}}
+
+
+\definecolor{MyDarkBlue}{rgb}{0,0.08,0.45} 
+\newenvironment{changed}{\par\color{MyDarkBlue}}{\par}
+
+\newcommand{\ADD}[1]{\textcolor{MyDarkBlue}{{\bf #1}}}
+\newcommand{\addit}[1]{\begin{changed}\input{#1}\end{changed}}
+
+\usepackage{color}
+\usepackage{listings}
+\usepackage{setspace}
+
+\definecolor{Gray}{gray}{0.9}
+\newcommand{\kw}[1]{\textit{#1}}
+\newcommand{\quart}[4]{\begin{picture}(80,6)
+	{\color{black}\put(#3,3){\circle*{2.5}}\put(#1,3){\line(1,0){#2}}}\end{picture}}
+% New Commands
+
+\definecolor{Code}{rgb}{0,0,0}
+\definecolor{Decorators}{rgb}{0.5,0.5,0.5}
+\definecolor{Numbers}{rgb}{0.5,0,0}
+\definecolor{MatchingBrackets}{rgb}{0.25,0.5,0.5}
+\definecolor{Keywords}{rgb}{0,0,1}
+\definecolor{self}{rgb}{0,0,0}
+\definecolor{Strings}{rgb}{0,0.63,0}
+\definecolor{Comments}{rgb}{0,0.63,1}
+\definecolor{Comments}{rgb}{0.5,0.5,0.5}
+\definecolor{Backquotes}{rgb}{0,0,0}
+\definecolor{Classname}{rgb}{0,0,0}
+\definecolor{FunctionName}{rgb}{0,0,0}
+\definecolor{Operators}{rgb}{0,0,0}
+\definecolor{Background}{rgb}{1,1,1}
+\author{Rahul Krishna, Tim Menzies\\
+	Computer Science, North Carolina State University, USA\\
+	\{i.m.ralk, tim.menzies\}\@gmail.com
+}
+\title{Evolutionary Multi-Objective Optimization:\\ A Distributed Computing approach}
+\usepackage{etoolbox}
+\makeatletter
+\makeatother
+
+
+\pagestyle{plain}
+\begin{document}
+	\maketitle
+	\begin{abstract}
+There are many algorithms for data  classification such as  C4.5, Naive Bayes, etc. Are these enough for learning actionable analytics? Or should we be supporting another kind of reasoning? This paper explores two approaches for learning minimal, yet effective, changes to software project artifacts.
+	\end{abstract}
+	\begin{IEEEkeywords}
+		Prediction, planning, instance-based reasoning, model-based reasoning, data mining, software engineering
+	\end{IEEEkeywords}
+	
+	\section{Introduction} 
+	How should we handle ``unpopulular'' results
+
+\section{What is MOO?}
+MOO
+
+\section{Experimental Setup}
+
+\begin{figure}
+\centering
+\begin{tabular}{|l@{~}|l@{~}|}
+\hline
+Setting & Value \\ \hline
+Population Size               & 100   \\
+Number of Generations         & 100   \\
+Mutation Rate                 & 0.75  \\ 
+Crossover Probability         & 0.3  \\ \hline
+\end{tabular}
+\caption{Settings for DE}
+\label{fig:de_settings}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{tabular}{|l@{~}|l@{~}|}
+\hline
+Setting & Value \\ \hline
+Population Size               & 100   \\
+Number of Generations         & 100   \\
+Domination Factor             & 0.15  \\ \hline 
+\end{tabular}
+\caption{Settings for GALE}
+\label{fig:gale_settings}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{tabular}{| >{\centering\arraybackslash}m{1in} | >{\centering\arraybackslash}m{1in} | >{\centering\arraybackslash}m{1in} | >{\centering\arraybackslash}m{1in} |}
+\hline
+Algorithm & Runtime & Convergence & Diversity \\ \hline
+DE & \shortstack{Min:A \\ Med:B \\ Max:C} & Min:A \newline Med:B \newline Max:C & 100   \\ \hline 
+\end{tabular}
+\caption{Settings for GALE}
+\label{fig:results}
+\end{figure}
+
+
+
+
+\section{Results}
+
+\bibliographystyle{plain}
+\bibliography{refs}
+\end{document}
