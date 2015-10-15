@@ -163,3 +163,13 @@ class Point(O):
   def __eq__(self, other):
     return self.decisions == other.decisions
 
+def report(lst, name):
+  print("*** ", str.upper(name), " ***")
+  s_lst = sorted(lst)
+  low = s_lst[0]
+  high = s_lst[-1]
+  med = s_lst[len(lst)//2] if len(lst) % 2 else (s_lst[len(lst)//2] + s_lst[len(lst)//2 - 1])/2
+  print("LOW  : ", low)
+  print("HIGH : ", high)
+  print("MED  : ", med)
+
