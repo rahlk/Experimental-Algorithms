@@ -85,6 +85,12 @@ def choice(lst):
   """
   return random.choice(lst)
 
+def rand():
+  """
+  Returns a random number.
+  """
+  return random.random()
+
 def more(x,y):
   """
   Check if x > y
@@ -143,6 +149,12 @@ class Point(O):
     else:
       self.objectives = []
 
+  def __hash__(self):
+    return hash(self.decisions)
+
+  def __eq__(self, other):
+    return cmp(self.decisions, other.decisions) == 0
+
   def clone(self):
     """
     Method to clone a point
@@ -159,7 +171,4 @@ class Point(O):
     """
     if not self.objectives:
       self.objectives = problem.evaluate(self.decisions)
-
-  def __eq__(self, other):
-    return self.decisions == other.decisions
-
+    return self.objectives

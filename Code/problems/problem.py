@@ -32,6 +32,15 @@ class Decision(O):
     """
     return de_norm(val, self.low, self.high)
 
+  def limit(self, val):
+    """
+    Limit the value between
+    low and high
+    :param val:
+    :return:
+    """
+    return max(self.low, min(val, self.high))
+
 class Objective(O):
   """
   Class depicting an objective for a problem
@@ -46,6 +55,12 @@ class Objective(O):
 
   def norm(self, val):
     return norm(val, self.low, self.high)
+
+  def better(self, a, b):
+    if self.to_minimize:
+      return a < b
+    else:
+      return a > b
 
 class Constraint(O):
   """
