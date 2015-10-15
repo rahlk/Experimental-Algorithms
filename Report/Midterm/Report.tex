@@ -82,9 +82,9 @@
 \definecolor{FunctionName}{rgb}{0,0,0}
 \definecolor{Operators}{rgb}{0,0,0}
 \definecolor{Background}{rgb}{1,1,1}
-\author{Rahul Krishna, Tim Menzies\\
+\author{Rahul Krishna, George Mathew\\
 	Computer Science, North Carolina State University, USA\\
-	\{i.m.ralk, tim.menzies\}\@gmail.com
+	\{rkrish11, george2\}\@ncsu.edu
 }
 \title{Evolutionary Multi-Objective Optimization:\\ A Distributed Computing approach}
 \usepackage{etoolbox}
@@ -96,17 +96,27 @@
 \begin{document}
 	\maketitle
 	\begin{abstract}
-There are many algorithms for data  classification such as  C4.5, Naive Bayes, etc. Are these enough for learning actionable analytics? Or should we be supporting another kind of reasoning? This paper explores two approaches for learning minimal, yet effective, changes to software project artifacts.
+
 	\end{abstract}
 	\begin{IEEEkeywords}
-		Prediction, planning, instance-based reasoning, model-based reasoning, data mining, software engineering
+
 	\end{IEEEkeywords}
 	
 	\section{Introduction} 
-	How should we handle ``unpopulular'' results
+Optimization is the task of finding one or more solutions which satisfy one or more specified objectives. While a single-objective optimization involves a single objective function and a single solutions, a multi-objective optimization considers several objectives simultaneously. In such a  case, a multi-objective optimizer generates a set of alternate solution with certain trade-offs. These are called Pareto optimal solutions.
 
-\section{What is MOO?}
-MOO
+Multi-objective problems are usually complex, NP-Hard, and resource intensive. Although exact methods can be used, they consume prohibitively large amounts of time and memory. An alternative approach would be to make use of meta-heuristic algorithms, which approximate the Pareto frontier in a reasonable amount of time. Even so, these meta-heuristic algorithms consume a significant amount of time. 
+
+Parallel and distributed computing used in design and implementation of these algorithms may offer significant speed-ups. In addition to this, they may be used to improve the quality, increase the robustness of the the obtained solutions, and may also allow the algorithms to be scaled to solve large problems. 
+
+In this project, we aim to present parallel models for two evolutionary multi-objective optimizers: (1) Differential Evolution (DE) \cite{storn97}; and (2) Geometric Active Learning (GALE) \cite{krall15}. From the implementation point of view, we focus on using the \textit{henry2 Linux cluster} offered by NC State with distributed programming environments such as message passing (OpenMPI)~\cite{openMPI04}.
+
+This report is organized as follows. The following section presents a brief description of the algorithms being studied. In \textsection\ref{measures}, we discuss various methods for evaluating the performance of the parallelized algorithms. In section \textsection\ref{challenges}, we highlight challenges we expect to overcome during implementation. Finally, section \textsection\ref{tools} highlights the tools we use.
+
+\section{Methods and Materials}
+\label{algos}
+
+An Evolutionary Optimization(EO) begins its search with a population of solutions usually created at random within a specified lower and upper bound on each variable. If bounds are not supplied in an optimization problem, suitable values can be assumed only for the initialization purpose. Thereafter, the EO procedure enters into an iterative operation of updating the current population to create a new population by the use of four main operators: selection, crossover, mutation and elite-preservation. The operation stops when one or more termination criteria are met. The following evolutionary algorithms shall be parallelized.
 
 \section{Experimental Setup}
 
