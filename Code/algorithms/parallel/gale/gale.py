@@ -161,7 +161,7 @@ class GALE(Algorithm):
         bests.append(west)
     return bests, evals
 
-def run(algo, init_pop=None):
+def run(algo, id = 0):
   gen = 0
   best_solutions = []
   population = Node.format(algo.problem.populate(settings().pop_size))
@@ -182,9 +182,8 @@ def run(algo, init_pop=None):
     gen += 1
   if RANK == 0:
     for i in range(1, SIZE):
-      best_solutions += COMM.recv(source=i)
+      best_solutions += COMM.recv(source=i, tag = id)
     # TODO - Process best solutions here
-    print()
     return best_solutions
   else:
-    COMM.send(best_solutions, dest=0)
+    COMM.isend(best_solutions, dest=0, tag = id)
