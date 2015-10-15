@@ -10,6 +10,8 @@ import math
 EPS = 0.00001
 PI = math.pi
 
+
+
 class O():
   """
   Default class which everything extends.
@@ -67,6 +69,9 @@ def uniform(low, high):
   :return: Uniform value in the uniform distribution
   """
   return random.uniform(low, high)
+
+def seed(val=None):
+  random.seed(val)
 
 def say(*lst):
   """
