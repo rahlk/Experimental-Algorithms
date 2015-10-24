@@ -13,29 +13,32 @@ COMM = MPI.COMM_WORLD
 RANK = COMM.rank
 SIZE = COMM.size
 
-def settings():
+def default_settings():
   """
   Default Settings for NSGA 3
   :return: default settings
   """
   return O(
     pop_size        = 100,
-    gens            = 100,
+    gens            = 160,
     allowDomination = True,
     gamma           = 0.15
   )
 
+def per_core(value):
+  return int(round(value/SIZE))
+
 class GALE(Algorithm):
 
-  def __init__(self, problem, gens=settings().gens):
+  def __init__(self, problem, **settings):
     Algorithm.__init__(self, 'GALE', problem)
     self.select = self._select
     self.evolve = self._evolve
     self.recombine = self._recombine
-    self.gens = gens
+    self.settings = default_settings().update(**settings)
 
   def _select(self, pop):
-    node = Node(self.problem, pop, settings().pop_size).divide(sqrt(pop))
+    node = Node(self.problem, pop, self.settings.pop_size).divide(sqrt(pop))
     non_dom_leafs = node.nonpruned_leaves()
     all_leafs = node.leaves()
 
@@ -50,7 +53,7 @@ class GALE(Algorithm):
 
   def _evolve(self, selected):
     evals = 0
-    GAMMA = settings().gamma
+    GAMMA = self.settings.gamma
     for leaf in selected:
       #Poles
       east = leaf._pop[0]
@@ -164,9 +167,11 @@ class GALE(Algorithm):
 def run(algo, id = 0):
   gen = 0
   best_solutions = []
-  population = Node.format(algo.problem.populate(settings().pop_size))
+  size = algo.settings.pop_size
+  max_gens = per_core(algo.settings.gens)
+  population = Node.format(algo.problem.populate(size))
   total_evals = 0
-  while gen < int(algo.gens/SIZE):
+  while gen < max_gens:
     say(str(RANK)+" ")
     selectees, evals =  algo.select(population)
     solutions, evals = algo.get_best(selectees)
@@ -177,13 +182,12 @@ def run(algo, id = 0):
     selectees, evals = algo.evolve(selectees)
     total_evals += evals
 
-    population, evals = algo.recombine(selectees, settings().pop_size)
+    population, evals = algo.recombine(selectees, algo.settings.pop_size)
     total_evals += evals
     gen += 1
   if RANK == 0:
     for i in range(1, SIZE):
       best_solutions += COMM.recv(source=i, tag = id)
-    # TODO - Process best solutions here
     return best_solutions
   else:
-    COMM.isend(best_solutions, dest=0, tag = id)
+    COMM.send(best_solutions, dest=0, tag = id)

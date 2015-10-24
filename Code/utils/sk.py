@@ -137,7 +137,7 @@ class Num:
   def __add__(i,j):
     return Num(i.name + j.name,i.all + j.all)
   def quartiles(i):
-    def p(x) : return g(xs[x])
+    def p(x) : return xs[x]
     i.median()
     xs = i.all
     n  = int(len(xs)*0.25)
@@ -499,7 +499,7 @@ def rdivDemo(data):
     q1,q2,q3 = x.quartiles()
     print  ('%4s , %12s ,    %5s  ,  %5s ' % \
                  (x.rank+1, x.name, q2, q3 - q1))  + \
-              xtile(x.all,lo=lo,hi=hi,width=30,show="%5.2f")
+              xtile(x.all,lo=lo,hi=hi,width=30,show="%5.8f")
     last = x.rank
 """
 
