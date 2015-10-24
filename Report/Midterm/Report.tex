@@ -1,6 +1,7 @@
 \documentclass[conference]{IEEEtran}
 %future work: local patch operator
 %complexity
+\usepackage{bigstrut}
 \usepackage{balance}
 \usepackage{subfig}
 \usepackage{wrapfig}
@@ -8,13 +9,19 @@
 \usepackage{url}
 \usepackage{pifont}
 \pagenumbering{gobble}
+\usepackage{lettrine}
 %\usepackage{times}
 \usepackage{rotating}
+\usepackage{booktabs}
 %\usepackage{balance} 
 \usepackage{color, colortbl}
 \usepackage{graphicx}
 \usepackage{algorithmicx}
 \usepackage[running]{lineno}
+\usepackage{times}
+\usepackage{fancyhdr,graphicx,amsmath,amssymb}
+\usepackage[ruled,vlined]{algorithm2e}
+\include{pythonlisting}
 \usepackage{program}
 \usepackage{cite}
 \usepackage{alltt}
@@ -50,6 +57,9 @@
 \definecolor{Blue}{RGB}{0,29,193}
 \newcommand{\G}{\cellcolor{green}}
 \newcommand{\Y}{\cellcolor{yellow}}
+\newcommand{\tc}{\centering\arraybackslash}
+\newcommand\topspace{\rule{0pt}{2.6ex}}       % Top strut
+\newcommand{\stack}[3]{\vskip 1mm\shortstack{Min : #1 \\ Med : #2 \\ Max : #3}}
 
 
 \definecolor{MyDarkBlue}{rgb}{0,0.08,0.45} 
@@ -66,9 +76,6 @@
 \newcommand{\kw}[1]{\textit{#1}}
 \newcommand{\quart}[4]{\begin{picture}(80,6)
 	{\color{black}\put(#3,3){\circle*{2.5}}\put(#1,3){\line(1,0){#2}}}\end{picture}}
-\newcommand{\tc}{\centering\arraybackslash}
-\newcommand\topspace{\rule{0pt}{2.6ex}}       % Top strut
-\newcommand{\stack}[3]{\vskip 1mm\shortstack{Min : #1 \\ Med : #2 \\ Max : #3}}
 
 % New Commands
 
@@ -107,28 +114,108 @@
 	\end{IEEEkeywords}
 	
 	\section{Introduction} 
-Optimization is the task of finding one or more solutions which satisfy one or more specified objectives. While a single-objective optimization involves a single objective function and a single solutions, a multi-objective optimization considers several objectives simultaneously. In such a  case, a multi-objective optimizer generates a set of alternate solution with certain trade-offs. These are called Pareto optimal solutions.
 
-Multi-objective problems are usually complex, NP-Hard, and resource intensive. Although exact methods can be used, they consume prohibitively large amounts of time and memory. An alternative approach would be to make use of meta-heuristic algorithms, which approximate the Pareto frontier in a reasonable amount of time. Even so, these meta-heuristic algorithms consume a significant amount of time. 
+\lettrine{M}{etaheuristic} search methods such as Evolutionary Algorithms are commonly used to \textit{optimize} many real-world applications \cite{goldberg1989genetic,storn97}. Optimization is the task of finding solutions which satisfy one or more specified objectives. There are two types of optimizers, a single-objective optimization involves a single objective function and a single solution, a multi-objective optimization considers several objectives simultaneously. In case of a multi-objective optimizer generates a set of alternate solutions with certain trade-offs. These are called Pareto optimal solutions. 
 
-Parallel and distributed computing used in design and implementation of these algorithms may offer significant speed-ups. In addition to this, they may be used to improve the quality, increase the robustness of the the obtained solutions, and may also allow the algorithms to be scaled to solve large problems. 
+The design of the evolutionary algorithms naturally leads to parallelization. They contain several individuals which are being improved through generations. This parallel nature is particularly useful when implementing the algorithm on distributed systems. Many real-world applications have time consuming function evaluations and therefore parallelizing the evaluations on a set of available computing resources speeds up the optimization task. In addition to this, steady advances in new technologies such as Grid Computing \cite{xx} allows parallelization to be performed with relative ease. Several Parallel Evolutionary Algorithms have been studied in the literature (e.g., in \cite{xx}). 
 
-In this project, we aim to present parallel models for two evolutionary multi-objective optimizers: (1) Differential Evolution (DE) \cite{storn97}; and (2) Geometric Active Learning (GALE) \cite{krall15}. From the implementation point of view, we focus on using the \textit{henry2 Linux cluster} offered by NC State with distributed programming environments such as message passing (OpenMPI)~\cite{openMPI04}.
+There are several parallel computing strategies (models) \cite{08parallel}, here we explore the three main models --- the Island model, Master-Slave model and Diffusion model. The current focus of this paper is the Island model, where the population for a given run is divided into semi-isolated subpopulations. Each subpopulation is assigned to a separate processor of the parallel computing system. The run begins with the one-time random creation of a separate population of individuals at each processor of the parallel computer system.
 
-This report is organized as follows. The following section presents a brief description of the algorithms being studied. In \textsection\ref{measures}, we discuss various methods for evaluating the performance of the parallelized algorithms. In section \textsection\ref{challenges}, we highlight challenges we expect to overcome during implementation. Finally, section \textsection\ref{tools} highlights the tools we use.
+%
+%Multi-objective problems have been chosen specifically because they are usually complex, NP-Hard, and resource intensive. Although exact methods can be used, they consume prohibitively large amounts of time and memory. An alternative approach would be to make use of meta-heuristic algorithms, which approximate the Pareto frontier in a reasonable amount of time. Even so, these meta-heuristic algorithms consume a significant amount of time. 
+%
+%Parallel and distributed computing used in design and implementation of these algorithms may offer significant speed-ups. In addition to this, they may be used to improve the quality, increase the robustness of the the obtained solutions, and may also allow the algorithms to be scaled to solve large problems. 
+
+In this project, we aim to present parallel models for two evolutionary multi-objective optimizers: (1) Differential Evolution (DE) \cite{storn97}; and (2) Geometric Active Learning (GALE) \cite{krall15}. For implementation, we use the \textit{henry2 Linux cluster} offered by NC State with message passing (OpenMPI)~\cite{openMPI04} a distributed programming environment.
+
+This report is organized as follows. The following section presents a brief background on the pertinent topics. In \textsection\ref{methods}, we discuss various strategies for parallelization. In \textsection\ref{experiments}, we provide the preliminary results. Finally, \textsection\ref{future} highlights how we plan on following up our work.
 
 \section{Methods and Materials}
 \label{algos}
-
+\subsection{Evolutionary Algorithms}
 An Evolutionary Optimization(EO) begins its search with a population of solutions usually created at random within a specified lower and upper bound on each variable. If bounds are not supplied in an optimization problem, suitable values can be assumed only for the initialization purpose. Thereafter, the EO procedure enters into an iterative operation of updating the current population to create a new population by the use of four main operators: selection, crossover, mutation and elite-preservation. The operation stops when one or more termination criteria are met. The following evolutionary algorithms shall be parallelized.
 
-\section{Experimental Setup}
+\subsubsection{Differential Evolution (DE)} 
+
+The Differential Evolution algorithm involves maintaining a population of candidate solutions subjected to iterations of recombination, evaluation, and selection. The recombination approach involves the creation of new candidate solution components based on the weighted difference between two randomly selected population members added to a third population member. This perturbs population members relative to the spread of the broader population. In conjunction with selection, the perturbation effect self-organizes the sampling of the problem space, bounding it to known areas of interest on the Pareto frontier. \fig{de} highlights the algorithmic details of the algorithm.
+
+\begin{figure}[h]
+\includegraphics[width=\linewidth]{img/de.png}
+\caption{Algorithm: Differential Evolution}	
+\label{fig:de}
+\end{figure}
+
+	
+\subsubsection{Geometric Active Learning (GALE)} 
+
+GALE is a near-linear time multi-objective optimization algorithm that builds a piecewise approximation to the surface of best solutions along the Pareto frontier. GALE uses a clustering algorithm called WHERE, which is powered by a FASTMAP \cite{faloutsos95}, to recursively reduce the dimensions to a single principal component. GALE offers the following advantages:
+	
+\begin{itemize}
+\item It optimizes a problem with far fewer computations compared to other algorithms.
+\item It is particularly adept at handling objective functions that are non-differentiable, non-linear, multidimensional, or are subject to multiple constraints.
+\item It offers a very concise representation of the problem space due to WHERE.
+\end{itemize}
+
+\section{Experiments}
+Python is our choice of programming language. This is due to its support for efficient computation frameworks like numpy~\cite{numpy} and scipy~\cite{scipy} that enables quick prototyping and benchmarking.
+For parallelization,  we used the OpenMPI implementation of the Message Passing Interface over a python wrapper. The Open MPI Project~\cite{openMPITool} is an open source Message Passing Interface implementation that is developed and maintained by a consortium of academic, research, and industry partners.The parallelized version of the algorithm could be deployed on HPC to measure the efficiency of the algorithm. The \textit{henry2}~\cite{ncsuHPC} shared memory linux cluster by NCSU may be used for this purpose. These nodes provide up to 16 shared memory processor cores and up to 128GB of memory accessible through a dedicated queue. 
+
+For our experiments, we used 4 cores using 128 GB of shared memory
+
+\subsection{Optimization Problem}
+\label{problem}
+
+Multi-objective Evolutionary Algorithms(MOEA) require scalable test problems that help test its efficiency. Our chosen test problem is a mathematical test problem \textbf{DTLZ2} \cite{debMOEA02}, which was formulated by \textit{Kalyanmoy \textbf{D}eb}, \textit{Lothar \textbf{T}hiele}, \textit{Marco \textbf{L}aumans} and \textit{Eckhart \textbf{Z}itzler}. 
+
+\textbf{Decisions} : DTLZ2 has 30 decisions between 0 and 1.
+\[0 \leq {x}_{i} \leq 1 \ \ \ \ where \ \  i = 1,2 ,3 .... 30\]
+
+\textbf{Objectives} : Although DTLZ2 allows as to generate upto n-1 objectives where n is the number of decisions, we choose to limit the number of objectives to 3 since we can model the objectives better to visualize the pareto frontier. Limiting the number of objectives also controls the domination pressure. All the three objectives needs to be minimized. The objectives are defined as follows:
+\[{f}_{1}(x) = (1+g({x}_{M}))\cos({x}_{1} \pi/2)....\cos({x}_{M-1} \pi/2)\]
+\[{f}_{2}(x) = (1+g({x}_{M}))\cos({x}_{1} \pi/2)....\cos({x}_{M-1} \pi/2)\]
+\[{f}_{3}(x) = (1+g({x}_{M}))\sin({x}_{1} \pi/2)\]
+\[where \ \ \ \ g({x}_{M}) = \sum_{x \in {x}_{M}} (x_i - 0.5)^2 \]
+
+\textbf{Optimal Solutions} : The pareto optimal solutions corresponds to the decisions \(x_i = 0.5\) and all objective function values must satisfy \(\sum_{m=1}^M (f_m)^2 = 1\). Figure \ref{fig:problem} shows the pareto frontier that represents the optimal solutions of DTLZ2.
 
 \begin{figure}
-\centering
-\begin{tabular}{|l@{~}|l@{~}|}
+	\centering
+	\includegraphics{img/dtlz2_pareto.png}
+	\caption{Pareto Frontier of DTLZ2}
+	\label{fig:problem}
+\end{figure}
+
+\subsection{Measures}
+\label{measures}
+Figure \ref{fig:measure} highlights the performance evaluation measures we use to evaluate the algorithms.
+
+\begin{figure}[h!]
+	\begin{tabular}{ll}
+		\hline
+		\rowcolor[HTML]{EFEFEF} 
+		\multicolumn{1}{l}{\cellcolor[HTML]{EFEFEF}{\bf Measure}} & \multicolumn{1}{c}{\cellcolor[HTML]{EFEFEF}{\bf  Description}}  \\ \hline
+		\rowcolor[HTML]{FFFFFF} 
+		{\bf Runtime}  & \begin{tabular}[l]{@{}l@{}}Time taken for the algorithm to be gener-\\ate optimal solutions.\end{tabular}\\\hline
+		{\bf Convergence}                                         & \begin{tabular}[l]{@{}l@{}}Convergence is the accuracy of the obtai-\\ned solutions. It mathematically repre-\\sents the hypervolume of the Pareto fro-\\ntier.In case of a  minimization problem,\\we expect it to be less and large in the\\case of a maximization problem.\end{tabular} \\
+		\rowcolor[HTML]{FFFFFF} 
+		\hline{\bf Diversity}                                           & \begin{tabular}[l]{@{}l@{}}Diversity represents the spread of the prop-\\osed solutions. Ideally the solutions should\\be well distributed across the Pareto fro-\\ntier,rather than concentrated in certain\\ regions.\end{tabular}\\ \hline
+	\end{tabular}
+	\caption{Performance Measures}
+	\label{fig:measure}
+\end{figure}
+
+\subsection{Setup}
+
+We parallelized GALE using the "island" model\cite{73Latter}. In the "island" approach to parallelization of genetic programming, the population for a given run is divided into semi-isolated subpopulations (called demes). Each subpopulation is assigned to a separate processor of the parallel computing system. The run begins with the one-time random creation of a separate population of individuals at each processor of the parallel computer system. This is a very rudimentary approach and we will be experimenting further using a Master Slave approach.
+
+The parameters we use for Differential Evolution and GALE are shown in \ref{fig:de_settings} and \ref{fig:gale_settings} respectively.
+
+\begin{figure*}[!t]
+	\centering
+\begin{minipage}{0.25\linewidth}
+\begin{tabular}{lr}
 \hline
-Setting & Value \\ \hline
+\rowcolor[gray]{.9} Setting & Value \\ \hline
 Population Size               & 100   \\
 Number of Generations         & 100   \\
 Mutation Rate                 & 0.75  \\ 
@@ -136,36 +223,117 @@ Crossover Probability         & 0.3  \\ \hline
 \end{tabular}
 \caption{Settings for DE}
 \label{fig:de_settings}
-\end{figure}
-
-\begin{figure}
-\centering
-\begin{tabular}{|l@{~}|l@{~}|}
-\hline
-Setting & Value \\ \hline
-Population Size               & 100   \\
-Number of Generations         & 100   \\
-Domination Factor             & 0.15  \\ \hline 
+\vspace{0.25cm}
+\begin{tabular}{lr}
+	\hline
+\rowcolor[gray]{.9} Setting & Value \\ \hline
+	Population Size               & 100   \\
+	Number of Generations         & 100   \\
+	Domination Factor             & 0.15  \\ \hline 
 \end{tabular}
 \caption{Settings for GALE}
 \label{fig:gale_settings}
-\end{figure}
-
-\begin{figure}
-\centering
-\begin{tabular}{| >{\tc}m{1in} | >{\tc}m{1in} | >{\tc}m{1in} | >{\tc}m{1in} |}
-\hline
-Algorithm & Runtime(secs) & Convergence & Diversity \\ \hline
-DE & \stack{0.45}{0.81}{0.49} & \stack{1.80e-5}{2.23e-5}{2.56e-5} & \stack{0.37}{0.44}{0.54} \\ \hline 
-GALE(Serial) & \stack{39.30}{43.35}{42.05} & \stack{5.28e-4}{5.52e-4}{5.73e-4} & \stack{0.36}{0.41}{0.49} \\ \hline 
-GALE(Parallel) & \stack{17.13}{20.45}{19.11} & \stack{5.273-4}{5.42e-4}{5.78e-4} & \stack{0.39}{0.42}{0.51} \\ \hline 
+\end{minipage}
+\begin{minipage}{0.66\linewidth}
+	\centering
+\begin{tabular}{>{\tc}m{0.81in} >{\tc}m{0.75in} >{\tc}m{0.8in} >{\tc}m{0.62in}}
+	\hline
+\rowcolor[gray]{.9}Algorithm & Runtime(secs) & Convergence & Diversity \\ \hline
+	DE & \stack{0.45}{0.49}{0.81} & \stack{1.80e-5}{2.23e-5}{2.56e-5} & \stack{0.37}{0.44}{0.54} \\ \hline 
+	GALE(Serial) & \stack{39.30}{42.05}{43.35} & \stack{5.28e-4}{5.49e-4}{5.73e-4} & \stack{0.36}{0.41}{0.49} \\ \hline 
+	GALE(Parallel) & \stack{17.13}{19.11}{20.45} & \stack{5.273-4}{5.54e-4}{5.78e-4} & \stack{0.39}{0.42}{0.51} \\ \hline 
 \end{tabular}
 \caption{Settings for GALE}
-\label{fig:results}
-\end{figure}
+\label{fig:results_table}
+\end{minipage}
+\end{figure*}
+
+\section{Results}
+The results for runtime, convergence and diversity are shown in \ref{fig:results_table}. Each optimizer is run over a random initial sample of the population 20 times to get the range of output values. The minimum, median and maximum values among the 20 iterations are shown in \ref{fig:results_table}.  As we can see the serialized version of DE yields the lowest convergence. The diversity for all three optimizers are in the same range.
 
 
+To study the distribution and rank the optimizer over all the 20 runs we use the Scott-Knott procedure recommended by Mittas \& Angelis\cite{mittas13}. This method
+sorts a list of $l$ treatments with $ls$ measurements by their median
+score. It then
+splits $l$ into sub-lists $m,n$ in order to maximize the expected value of
+differences  in the observed performances
+before and after divisions. E.g. for lists $l,m,n$ of size $ls,ms,ns$ where $l=m\cup n$:
+\[E(\Delta)=\frac{ms}{ls}abs(m.\mu - l.\mu)^2 + \frac{ns}{ls}abs(n.\mu - l.\mu)^2\]
+Scott-Knott then applies some statistical hypothesis test $H$ to check
+if $m,n$ are significantly different. If so, Scott-Knott then recurses on each division.
+For example, consider the following data collected under different treatments {\em rx}:
 
+{\scriptsize \begin{verbatim}
+	rx1 = [0.34, 0.49, 0.51, 0.6]
+	rx2 = [0.6,  0.7,  0.8,  0.9]
+	rx3 = [0.15, 0.25, 0.4,  0.35]
+	rx4=  [0.6,  0.7,  0.8,  0.9]
+	rx5=  [0.1,  0.2,  0.3,  0.4]
+	\end{verbatim}}
+\noindent
+After sorting and division, Scott-Knott declares:
+\bi
+\item Ranked \#1 is rx5 with median= 0.25
+\item Ranked \#1 is rx3 with median= 0.3
+\item Ranked \#2 is rx1 with median= 0.5
+\item Ranked \#3 is rx2 with median= 0.75
+\item Ranked \#3 is rx4 with median= 0.75
+\ei
+Note that Scott-Knott found  little
+difference between rx5 and rx3. Hence,
+they have the same rank, even though their medians differ.
+
+Scott-Knott is better than an 
+all-pairs hypothesis test of all methods; e.g. six treatments
+can be compared \mbox{$(6^2-6)/2=15$} ways. 
+A 95\% confidence test run for each comparison has  a very low total confidence: 
+\mbox{$0.95^{15} = 46$}\%.
+To avoid an all-pairs comparison, Scott-Knott only calls on hypothesis
+tests {\em after} it has found splits that maximize the performance differences.
+
+For this study, our hypothesis test $H$ was a
+conjunction of the A12 effect size test of  and
+non-parametric bootstrap sampling; i.e. our
+Scott-Knott divided the data if {\em both}
+bootstrapping and an effect size test agreed that
+the division was statistically significant (99\%
+confidence) and not a ``small'' effect ($A12 \ge
+0.6$).
+
+\begin{figure}[t]
+	{\scriptsize \begin{tabular}{l@{~~~}l@{~~~}l@{~~~}l@{~~~}c}
+			\arrayrulecolor{darkgray}
+			\hline
+			\rowcolor[gray]{.9}  Rank & Optimizer & Median & IQR & 
+			%min= 20, max= 117
+			\bigstrut\\ \hline
+			1 &      DE(Serial) &    2.23$\times10^{-5}$  &  3.04$\times10^{-6}$ & \quart{1}{1}{1}{100} \bigstrut\\ \hline
+			
+			1 &      GALE(Serial) &    5.49$\times10^{-4}$  &  8.72$\times10^{-6}$ & \quart{70}{1}{71}{100} \bigstrut\\
+			1 &       GALE(Parallel) &    5.54$\times10^{-4}$  &  2.21$\times10^{-5}$ & \quart{70}{10}{76}{100} \bigstrut\\ \hline
+			
+		\end{tabular}}
+		\caption{Convergence of Optimizers. }\label{fig:convergence}
+		\vspace{0.25cm}
+		{\scriptsize \begin{tabular}{llllcc}
+				\arrayrulecolor{darkgray}
+				\hline 
+				\rowcolor[gray]{.9}  Rank & Optimizer & Median & IQR & & 
+				%min= 20, max= 117
+				\bigstrut\\ \hline
+				1 &      DE(Serial) &    0.416  &  0.070 & \quart{45}{4}{46}{100} & \bigstrut\\ \hline
+				1 &      GALE(Serial) &    0.431  &  0.056 & \quart{46}{5}{48}{100} & \bigstrut\\
+				1 &       GALE(Parallel) &    0.432  &  0.047 & \quart{46}{5}{48}{100} &\bigstrut\\ \hline
+				
+			\end{tabular}}
+			\caption{Diversity of Optimizers. }\label{fig:diversity}
+		\end{figure}
+		
+		We have estimated the Scott-Knott rankings for convergence and diversity for all three of the optimizer methods. We did not estimate it for runtime since DE was almost 50 times faster than GALE, hence there was no statistical significance to measure it.
+		
+		From \ref{fig:convergence} we can see that the serialized version of DE produces the best result with rank 1, but there is no statistical difference between the serialized and parallel version of GALE in terms of convergence. The black dot in the last column shows the median value of convergence over 20 runs and the line shows the set of values between the 25th and 75th percentile. We can see that the variance for convergence is very small for all the optimizers, since the inter-quartile distance between the 25th and 75th quartile is almost 0.
+		
+		The \ref{fig:diversity} shows that there is no statistical difference in diversity between all the three methods.
 
 \section{Results}
 
