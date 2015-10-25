@@ -3,7 +3,8 @@ import sys
 from problems.dtlz.dtlz2 import DTLZ2
 from algorithms.serial.gale.gale import GALE as GALE_S
 from algorithms.parallel.gale.gale import GALE as GALE_P
-from algorithms.serial.de.DE import DE as DE_S
+from algorithms.serial.de.de import DE as DE_S
+from algorithms.parallel.de.de import DE as DE_P
 from mpi4py import MPI
 from time import clock, sleep
 from utils.lib import O, report
@@ -90,5 +91,4 @@ if __name__ == "__main__":
   if args[1] == "gale":
     _run_once(GALE_P)
   elif args[1] == "de":
-    #_run_once(DE_P)
-    pass
+    _run_once(DE_P)

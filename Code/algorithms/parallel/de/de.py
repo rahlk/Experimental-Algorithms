@@ -1,10 +1,14 @@
 from __future__ import print_function, division
 import sys, os
 sys.path.append(os.path.abspath("."))
+from mpi4py import MPI
 from utils.lib import *
 from algorithms.serial.algorithm import Algorithm
 
-__author__ = 'rkrsn'
+COMM = MPI.COMM_WORLD
+
+RANK = COMM.rank
+SIZE = COMM.size
 
 def default_settings():
   """
@@ -13,13 +17,14 @@ def default_settings():
   """
   return O(
     gens = 100,
-    candidates = 100,
+    candidates = 160,
     f = 0.75,
     cr = 0.3,
     seed = 1
   )
 
-
+def per_core(value):
+  return int(round(value/SIZE))
 
 class DE(Algorithm):
   """
@@ -95,31 +100,35 @@ class DE(Algorithm):
     pop = self.problem.populate(size)
     return [Point(one) for one in pop]
 
-  def run(self, pop=None):
+  @staticmethod
+  def run(algo, id = 0):
     """
     Run DE
     :param pop:
     :return:
     """
-    if pop is None:
-      pop = self.generate(self.settings.candidates)
-    for one in pop: one.evaluate(self.problem)
-
-    for _ in range(self.settings.gens):
-      say(".")
+    gen = 0
+    size = algo.settings.candidates
+    max_gens = per_core(algo.settings.gens)
+    pop = algo.generate(size)
+    for one in pop: one.evaluate(algo.problem)
+    while gen < max_gens:
+      say(str(RANK)+" ")
       clones = [one.clone() for one in pop]
       for point in pop:
-        original_obj = point.evaluate(self.problem)
-        mutant = self.mutate(point, pop)
-        if not self.problem.check_constraints(mutant):
+        original_obj = point.evaluate(algo.problem)
+        mutant = algo.mutate(point, pop)
+        if not algo.problem.check_constraints(mutant):
           continue
-        mutated_obj = mutant.evaluate(self.problem)
-        if self.dominates(mutated_obj, original_obj) and (not mutant in clones):
+        mutated_obj = mutant.evaluate(algo.problem)
+        if algo.dominates(mutated_obj, original_obj) and (not mutant in clones):
           clones.remove(point)
           clones.append(mutant)
       pop = clones
-    print("")
-    return pop
-
-
-
+      gen += 1
+    if RANK == 0:
+      for i in range(1, SIZE):
+        pop += COMM.recv(source=i, tag = id)
+      return pop
+    else:
+      COMM.send(pop, dest=0, tag = id)
