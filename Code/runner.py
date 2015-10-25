@@ -1,13 +1,12 @@
 from __future__ import print_function, division
+import sys
 from problems.dtlz.dtlz2 import DTLZ2
 from algorithms.serial.gale.gale import GALE as GALE_S
 from algorithms.parallel.gale.gale import GALE as GALE_P
-from algorithms.parallel.gale.gale import run as run_p
 from algorithms.serial.de.DE import DE as DE_S
 from mpi4py import MPI
 from time import clock, sleep
-from utils.lib import O, report, seed
-import utils.sk as sk
+from utils.lib import O, report
 
 
 COMM = MPI.COMM_WORLD
@@ -25,7 +24,7 @@ def _run_parallel():
   for i in range(settings.runs):
     print(i)
     start = clock()
-    goods = run_p(gale, id = i)
+    goods = GALE_P.run(gale, id = i)
     if RANK == 0:
       times.append(clock() - start)
       convs.append(gale.convergence(goods))
@@ -59,11 +58,11 @@ def _run_serial():
   print("Diversity", dives)
   report(dives, "Diversity")
 
-def _run_once():
+def _run_once(optimizer):
   model = DTLZ2(3)
-  opt = GALE_P(model)
+  opt = optimizer(model)
   start = clock()
-  goods = run_p(opt)
+  goods = optimizer.run(opt)
   delta = clock() - start
   if RANK == 0:
     print("\nTime taken ", delta)
@@ -84,9 +83,12 @@ GALE_C_Parallel = [0.00055023804107289464, 0.00056840024193905369, 0.00054014713
 GALE_D_Parallel = [0.47756324201340233, 0.34338827152012313, 0.37702310652791976, 0.3812810382395399, 0.44246226377967579, 0.3918531310121483, 0.40870091345000326, 0.45126527598138111, 0.44627298181072489, 0.43102137690260817, 0.36304936983777769, 0.32840066997860679, 0.49015906974400514, 0.49534594905918372, 0.37685351425128155, 0.41589424177536238, 0.44379976457351544, 0.39392598613842977, 0.41257192127627285, 0.4664020477306397]
 
 if __name__ == "__main__":
-  _run_once()
-  # sk.rdivDemo([
-  #  ["DE(Serial)"] + DE_C_Serial,
-  #  ["GALE(Serial)"] + GALE_C_Serial,
-  #  ["GALE(Parallel)"] + GALE_C_Parallel
-  # ])
+  args = sys.argv
+  if len(args) != 2:
+    print("Optimizer not mentioned")
+    exit()
+  if args[1] == "gale":
+    _run_once(GALE_P)
+  elif args[1] == "de":
+    #_run_once(DE_P)
+    pass

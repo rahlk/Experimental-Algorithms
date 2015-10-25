@@ -164,30 +164,31 @@ class GALE(Algorithm):
         bests.append(west)
     return bests, evals
 
-def run(algo, id = 0):
-  gen = 0
-  best_solutions = []
-  size = algo.settings.pop_size
-  max_gens = per_core(algo.settings.gens)
-  population = Node.format(algo.problem.populate(size))
-  total_evals = 0
-  while gen < max_gens:
-    say(str(RANK)+" ")
-    selectees, evals =  algo.select(population)
-    solutions, evals = algo.get_best(selectees)
-    best_solutions += solutions
-    total_evals += evals
+  @staticmethod
+  def run(algo, id = 0):
+    gen = 0
+    best_solutions = []
+    size = algo.settings.pop_size
+    max_gens = per_core(algo.settings.gens)
+    population = Node.format(algo.problem.populate(size))
+    total_evals = 0
+    while gen < max_gens:
+      say(str(RANK)+" ")
+      selectees, evals =  algo.select(population)
+      solutions, evals = algo.get_best(selectees)
+      best_solutions += solutions
+      total_evals += evals
 
-    # EVOLUTION
-    selectees, evals = algo.evolve(selectees)
-    total_evals += evals
+      # EVOLUTION
+      selectees, evals = algo.evolve(selectees)
+      total_evals += evals
 
-    population, evals = algo.recombine(selectees, algo.settings.pop_size)
-    total_evals += evals
-    gen += 1
-  if RANK == 0:
-    for i in range(1, SIZE):
-      best_solutions += COMM.recv(source=i, tag = id)
-    return best_solutions
-  else:
-    COMM.send(best_solutions, dest=0, tag = id)
+      population, evals = algo.recombine(selectees, algo.settings.pop_size)
+      total_evals += evals
+      gen += 1
+    if RANK == 0:
+      for i in range(1, SIZE):
+        best_solutions += COMM.recv(source=i, tag = id)
+      return best_solutions
+    else:
+      COMM.send(best_solutions, dest=0, tag = id)
