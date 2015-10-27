@@ -108,12 +108,12 @@ class DE(Algorithm):
     :return:
     """
     gen = 0
-    size = algo.settings.candidates
-    max_gens = per_core(algo.settings.gens)
+    size = per_core(algo.settings.candidates)
+    max_gens = algo.settings.gens
     pop = algo.generate(size)
     for one in pop: one.evaluate(algo.problem)
     while gen < max_gens:
-      say(str(RANK)+" ")
+      say(".")
       clones = [one.clone() for one in pop]
       for point in pop:
         original_obj = point.evaluate(algo.problem)

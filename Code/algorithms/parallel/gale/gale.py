@@ -173,7 +173,7 @@ class GALE(Algorithm):
     population = Node.format(algo.problem.populate(size))
     total_evals = 0
     while gen < max_gens:
-      say(str(RANK)+" ")
+      say(".")
       selectees, evals =  algo.select(population)
       solutions, evals = algo.get_best(selectees)
       best_solutions += solutions
