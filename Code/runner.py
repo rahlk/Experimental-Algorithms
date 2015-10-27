@@ -3,7 +3,6 @@ import sys
 from problems.dtlz.dtlz2 import DTLZ2
 from algorithms.serial.gale.gale import GALE as GALE_S
 from algorithms.parallel.gale.gale import GALE as GALE_P
-from algorithms.serial.de.de import DE as DE_S
 from algorithms.parallel.de.de import DE as DE_P
 from mpi4py import MPI
 from time import clock, sleep
