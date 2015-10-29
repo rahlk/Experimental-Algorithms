@@ -6,10 +6,10 @@ set title "GALE"
 
 set xlabel " Processors "
 
-set ylabel " Runtime(seconds) "
+set ylabel " Runtime (seconds) "
 
 set xrange [1:]
 
 set datafile separator ","
 
-plot "gale_processors.csv" using 1:2 title 'GALE'
+plot "gale_processors.csv" using 1:2 lt 1 lw 2 smooth bezier title 'GALE'
