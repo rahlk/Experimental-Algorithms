@@ -1,6 +1,10 @@
-set terminal png
+# For PNG
+# set terminal png
+# set output "de_processors.png"
 
-set output "de_processors.png"
+# For EPS
+set terminal eps
+set output "de_processors.eps"
 
 set title "Differential Evolution"
 
