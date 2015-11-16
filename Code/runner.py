@@ -93,11 +93,12 @@ def _stat():
   ])
 
 if __name__ == "__main__":
-  args = sys.argv
-  if len(args) != 2:
-    print("Optimizer not mentioned")
-    exit()
-  if args[1] == "gale":
-    _run_once(GALE_P)
-  elif args[1] == "de":
-    _run_once(DE_P)
+  # args = sys.argv
+  # if len(args) != 2:
+  #   print("Optimizer not mentioned")
+  #   exit()
+  # if args[1] == "gale":
+  #   _run_once(GALE_P)
+  # elif args[1] == "de":
+  #   _run_once(DE_P)
+  _run_parallel()

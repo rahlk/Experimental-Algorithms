@@ -73,6 +73,13 @@
 \usepackage{listings}
 \usepackage{setspace}
 
+\usepackage{array}
+\newcolumntype{$}{>{\global\let\currentrowstyle\relax}}
+\newcolumntype{^}{>{\currentrowstyle}}
+\newcommand{\rowstyle}[1]{\gdef\currentrowstyle{#1}%
+  #1\ignorespaces
+}
+
 \lstnewenvironment{python}[1][]{
 \lstset{
 	mathescape,
@@ -286,7 +293,6 @@
 			\multicolumn{1}{l}{\cellcolor[HTML]{EFEFEF}{\bf Measure}} & \multicolumn{1}{c}{\cellcolor[HTML]{EFEFEF}{\bf  Description}}  \\ \hline
 			\rowcolor[HTML]{FFFFFF} 
 			{\bf Runtime}  & \begin{tabular}[l]{@{}l@{}}Time taken for the algorithm to be gener-\\ate optimal solutions.\end{tabular}\\\hline
-			{\bf Convergence}                                         & \begin{tabular}[l]{@{}l@{}}Convergence is the accuracy of the obtai-\\ned solutions. It mathematically repre-\\sents the hypervolume of the Pareto fro-\\ntier.In case of a  minimization problem,\\we expect it to be less and large in the\\case of a maximization problem.\end{tabular} \\
 			\rowcolor[HTML]{FFFFFF} 
 			\hline{\bf Diversity}                                           & \begin{tabular}[l]{@{}l@{}}Diversity represents the spread of the prop-\\osed solutions. Ideally the solutions should\\be well distributed across the Pareto fro-\\ntier,rather than concentrated in certain\\ regions.\end{tabular}\\ \hline
 		\end{tabular}
@@ -356,6 +362,54 @@
 	confidence) and not a ``small'' effect ($A12 \ge
 	0.6$).
 	
+	\begin{table*}[htbp]
+    \begin{minipage}{0.98\linewidth}
+        \centering
+        \begin{tabular}{$l@{\hspace{6pt}} *{16}{^c@{\hspace{5pt}}}}
+        \toprule
+        \rowstyle{\bfseries\boldmath} Processors  & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15 & 16 \\
+        \midrule
+        \bfseries GALE
+        & 96.38
+        & 50.32
+        & 34.96
+        & 25.92
+        & 21.46
+        & 17.98
+        & 14.95
+        & 13.17
+        & 12.35
+        & 10.56
+        & 10.13
+        & 9.14 
+        & 8.43 
+        & 7.67 
+        & 7.58 
+        & 6.97 \\
+        \bfseries DE
+        & 0.97
+        & 0.53
+        & 0.3 
+        & 0.23
+        & 0.17
+        & 0.15
+        & 0.13
+        & 0.11
+        & 0.11
+        & 0.08
+        & 0.09
+        & 0.14
+        & 0.1 
+        & 0.09
+        & 0.07
+        & 0.06 \\
+        \bottomrule
+        \end{tabular}
+        \caption{Runtimes of GALE and DE in seconds}
+        \label{tab:runtimes}
+    \end{minipage}
+    \end{table*}
+	
 	\begin{figure}[t]
 		{\scriptsize \begin{tabular}{l@{~~~}l@{~~~}l@{~~~}l@{~~~}c}
 			\arrayrulecolor{darkgray}
@@ -396,23 +450,30 @@
 	
 	\subsection{Runtimes}
 	
-	HPC supports upto 16 processors with 128GB of shared memory. The runtimes for DE and GALE when deployed on 2 to 16 processors is illustrated in figure \ref{fig:de_runtime} and figure \ref{fig:gale_runtime} respectively. The results show that after 8 processors the runtime for DE starts to become constant and for GALE, the results does not stabilize. This might be because the runtimes for GALE is two orders of magnitude more than that of DE and hence the communication overhead might not be significant in its case.
+	HPC supports upto 16 processors with 128GB of shared memory. The runtimes for DE and GALE when deployed on 1 to 16 processors is tabulated in table \ref{tab:runtimes}. The results show that after 8 processors the runtime for DE starts to become constant and for GALE, the results does not stabilize. This might be because the runtimes for GALE is two orders of magnitude more than that of DE and hence the communication overhead might not be significant in its case.
+	
+	Based on the data in table \ref{tab:runtimes}, speed up for on different processors is illustrated in \ref{fig:speedups}. Speed up is calculated as
+	
+	\[SpeedUp = \frac{{T}_{Serial}}{{T}_{Parallel}} \]
+	
+	where ${T}_{Serial}$ is the time taken to run the optimizer on a single processor and ${T}_{n}$ is the time taken to run the optimizer parallely on \textbf{n} number of processors where n varies from 2 to 16.
+	
 	
 	\begin{figure}[h]
 		\begin{mdframed}
-			\includegraphics[width=\linewidth]{img/de_processors}
+			\includegraphics[width=\linewidth]{img/speedups}
 		\end{mdframed}
-		\caption{DE: Runtime vs Processors}	
-		\label{fig:de_runtime}
+		\caption{Speed Ups for GALE and DE}	
+		\label{fig:speedups}
 	\end{figure}
 	
-	\begin{figure}[h]
-		\begin{mdframed}
-			\includegraphics[width=\linewidth]{img/gale_processors}
-		\end{mdframed}
-		\caption{GALE: Runtime vs Processors}	
-		\label{fig:gale_runtime}
-	\end{figure}
+% 	\begin{figure}[h]
+% 		\begin{mdframed}
+% 			\includegraphics[width=\linewidth]{img/gale_processors}
+% 		\end{mdframed}
+% 		\caption{GALE: Runtime vs Processors}	
+% 		\label{fig:gale_runtime}
+% 	\end{figure}
 	
 	\section{Future Work}
 	\label{future}
