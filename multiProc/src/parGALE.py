@@ -96,10 +96,11 @@ def gale0(model=DTLZ2(n_dec=30,n_obj=3), new=[], pop=int(1e4)):
   return new
 
 def gale1(iter=1000,pop=1600,model=DTLZ2(n_dec=30, n_obj=3)):
-  new = gale0(model,new=[],pop=pop)
+  n_proc = int(1000.00/iter)
+  new = gale0(model,new=[],pop=int(pop/n_proc))
   while iter:
     iter-=1
-    new=gale0(model, new, pop=pop)
+    new=gale0(model, new, pop=int(pop/n_proc))
   return new
 
 def gale2(pop):
@@ -109,7 +110,7 @@ def gale2(pop):
 
 def GALE2(n_proc=10,frontSize=1600,iters=1000,model=DTLZ2(n_dec=30, n_obj=3)):
   """
-  FIX THIS!!!
+  WHY do threads take more time than single processors?? FIX THIS!!!
   :param n_proc:
   :param frontSize:
   :param iters:
