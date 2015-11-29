@@ -20,14 +20,28 @@ import random
 from random import seed as rseed, randint as randi
 import numpy as np
 from time import time
+from tools.quality import measure
 
 class settings:
   iter=50,
   N=100,
   f=0.5,
-  cf=0.8,
+  cf=0.3,
   maxIter=100,
   lives=10
+
+def flatten(x):
+  """
+  Takes an N times nested list of list like [[a,b],[c, [d, e]],[f]]
+  and returns a single list [a,b,c,d,e,f]
+  """
+  result = []
+  for el in x:
+    if hasattr(el, "__iter__") and not isinstance(el, basestring):
+      result.extend(flatten(el))
+    else:
+      result.append(el)
+  return result
 
 def de0(model=DTLZ2(n_dec=30,n_obj=3), new=[], pop=int(1e4), iter=1000, lives=5, settings=settings):
   """
@@ -83,26 +97,24 @@ def de0(model=DTLZ2(n_dec=30,n_obj=3), new=[], pop=int(1e4), iter=1000, lives=5,
       if cdom(newVal, oldVal):
         frontier.pop(pos)
         frontier.insert(pos, new)
-        better = True
         lives += 1
-        if newVal > xbestVal:
-          xbest = new
-          xbestVal = model.solve(xbest)
+        # if newVal > xbestVal:
+        #   xbest = new
+        #   xbestVal = model.solve(xbest)
       elif cdom(model.solve(frontier[pos]), model.solve(new)):
         better = False
-        if oldVal > xbestVal:
-          xbest = frontier[pos]
-          xbestVal = model.solve(xbest)
+        # if oldVal > xbestVal:
+        #   xbest = frontier[pos]
+        #   xbestVal = model.solve(xbest)
       else:
         frontier.append(new)
-        if newVal > xbestVal:
-          xbest = new
-          xbestVal = model.solve(xbest)
-        better = True
         lives += 1
-  return xbest
+        # if newVal > xbestVal:
+        #   xbest = new
+        #   xbestVal = model.solve(xbest)
+  return frontier
  
-def de1(iter=1000,pop=1600,model=DTLZ2(n_dec=30, n_obj=3)):
+def de1(iter=1000,pop=100,model=DTLZ2(n_dec=30, n_obj=3)):
   n_proc = int(1000/iter)
   return de0(model,new=[],pop=int(pop/n_proc),iter=iter/n_proc)
 
@@ -115,8 +127,12 @@ def dEvol(n_proc=10,frontSize=100,iters=1000):
   p=Pool(processes=n_proc)
   collect.extend(p.map(de1, per))
   for cc in collect: final.extend(cc)
+  print("Time taken: ",time()-t)
   # true = DTLZ2(n_dec=30, n_obj=3).get_pareto()
-  # # set_trace()
+  m = measure(model=DTLZ2(n_dec=30, n_obj=3))
+  conv = m.convergence(final)
+  print("Convergence:",conv)
+  # set_trace()
   return
 
 if __name__=="__main__":

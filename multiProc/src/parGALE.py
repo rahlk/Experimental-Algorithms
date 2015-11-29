@@ -21,6 +21,7 @@ from multiprocessing import Pool
 from random import seed as rseed, randint as randi
 import numpy as np
 from time import time
+from tools.quality import measure
 
 def gale0(model=DTLZ2(n_dec=30,n_obj=3), new=[], pop=int(1e4)):
   """
@@ -108,7 +109,7 @@ def gale2(pop):
   # set_trace()
   return gale0(new=model.generate(pop))
 
-def GALE2(n_proc=10,frontSize=1600,iters=1000,model=DTLZ2(n_dec=30, n_obj=3)):
+def GALE2(n_proc=10,frontSize=100,iters=1000,model=DTLZ2(n_dec=30, n_obj=3)):
   """
   WHY do threads take more time than single processors?? FIX THIS!!!
   :param n_proc:
@@ -130,7 +131,7 @@ def GALE2(n_proc=10,frontSize=1600,iters=1000,model=DTLZ2(n_dec=30, n_obj=3)):
   print('Time Taken: ', time()-t)
   return ret
 
-def GALE(n_proc=10,frontSize=1600,iters=1000):
+def GALE(n_proc=10,frontSize=100,iters=100):
   t = time()
   collect=[]
   final = []
@@ -141,9 +142,12 @@ def GALE(n_proc=10,frontSize=1600,iters=1000):
   for cc in collect: final.extend(cc)
   ret = gale0(model=DTLZ2(n_dec=30, n_obj=3),new=final,pop=len(final))
   print('Time Taken: ', time()-t)
-  true = DTLZ2(n_dec=30, n_obj=3).get_pareto()
-  set_trace()
-  return ret
+  # true = DTLZ2(n_dec=30, n_obj=3).get_pareto()
+  m = measure(model=DTLZ2(n_dec=30, n_obj=3))
+  conv = m.convergence(final)
+  print("Convergence:",conv)
+  # set_trace()
+  return
 
 if __name__=="__main__":
   eval(cmd())

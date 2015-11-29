@@ -40,7 +40,7 @@ class DTLZ2:
         objs[n] *= np.cos(0.5 * np.pi * dec[j])
       if n != 0:
         objs[n] *= np.sin(0.5 * np.pi * dec[i.n_obj - n - 1])
-    sleep(0.25)
+    sleep(0.1)
     return objs
 
 if __name__=='__main__':
