@@ -93,7 +93,7 @@ def gale0(model=DTLZ2(n_dec=30,n_obj=3), new=[], pop=int(1e4)):
   recurse(frontier)
   a,b=distant(leaf)
   (good, bad) = (a,b) if cdom(model.solve(a), model.solve(b)) else (b,a)
-  new=mutate(leaf,good,g=0.15)
+  new=mutate(leaf,good,g=0.5)
   return new
 
 def gale1(iter=1000,pop=1600,model=DTLZ2(n_dec=30, n_obj=3)):
@@ -144,7 +144,7 @@ def GALE(n_proc=10,frontSize=100,iters=100):
   print('Time Taken: ', time()-t)
   # true = DTLZ2(n_dec=30, n_obj=3).get_pareto()
   m = measure(model=DTLZ2(n_dec=30, n_obj=3))
-  conv = m.convergence(final)
+  conv = m.convergence(ret)
   print("Convergence:",conv)
   # set_trace()
   return

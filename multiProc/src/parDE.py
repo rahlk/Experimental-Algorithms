@@ -26,7 +26,7 @@ class settings:
   iter=50,
   N=100,
   f=0.5,
-  cf=0.3,
+  cf=0,
   maxIter=100,
   lives=10
 
@@ -118,7 +118,7 @@ def de1(iter=1000,pop=100,model=DTLZ2(n_dec=30, n_obj=3)):
   n_proc = int(1000/iter)
   return de0(model,new=[],pop=int(pop/n_proc),iter=iter/n_proc)
 
-def dEvol(n_proc=10,frontSize=100,iters=100):
+def dEvol(n_proc=10,frontSize=1000,iters=1000):
   t = time()
   collect=[]
   final = []
