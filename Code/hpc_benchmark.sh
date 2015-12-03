@@ -6,4 +6,4 @@ if [ "$#" -ne 3 ]; then
   exit 1
 fi
 
-bsub -W 600 -n $1 -o out/bm_$2_$3_$1.out.%J -e err/bm_$2_$3_$1.err.%J sh benchmark.sh $1 $2 $3 > log/bm_$2_$3_$1.log
+bsub -W 1200 -n $1 -o out/bm_$2_$3_$1.out.%J -e err/bm_$2_$3_$1.err.%J sh benchmark.sh $1 $2 $3 > log/bm_$2_$3_$1.log
