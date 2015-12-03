@@ -8,7 +8,10 @@ from mpi4py import MPI
 from time import clock, sleep
 from utils.lib import O, report
 import utils.sk as sk
-
+from problems.pom3.pom3a import POM3A
+from problems.pom3.pom3b import POM3B
+from problems.pom3.pom3c import POM3C
+from problems.pom3.pom3d import POM3D
 
 COMM = MPI.COMM_WORLD
 RANK = COMM.rank
@@ -59,16 +62,15 @@ def _run_serial():
   print("Diversity", dives)
   report(dives, "Diversity")
 
-def _run_once(optimizer):
-  model = DTLZ2(3)
+def _run_once(optimizer, model):
   opt = optimizer(model)
   start = clock()
   goods = optimizer.run(opt)
   delta = clock() - start
   if RANK == 0:
     print("\nTime taken ", delta)
-    print(opt.convergence(goods))
-    print(opt.diversity(goods))
+    #print(opt.convergence(goods))
+    #print(opt.diversity(goods))
     opt.solution_range(goods)
 
 DE_C_Serial = [2.5385316007181199e-05, 2.3418536994411972e-05, 2.3788062745336907e-05, 2.1613902083339628e-05, 2.3976668414068685e-05, 2.3596026056376446e-05, 2.0336834025242928e-05, 2.5909309176883238e-05, 2.0729672510416615e-05, 2.6585743373241287e-05, 2.1602981685093584e-05, 2.2346700949965269e-05, 2.2579422083628548e-05, 2.231760007548548e-05, 2.615552278660041e-05, 2.2513579763014682e-05, 2.2709449680334556e-05, 2.4915527333702019e-05, 2.4278665435833786e-05, 2.6885116330194885e-05]
@@ -92,13 +94,31 @@ def _stat():
     ["GALE_P"] + GALE_D_Parallel
   ])
 
+def get_model(name):
+  if name == "dtlz2":
+    return DTLZ2(3)
+  elif name == "pom3a":
+    return POM3A()
+  elif name == "pom3b":
+    return POM3B()
+  elif name == "pom3c":
+    return POM3C()
+  elif name == "pom3d":
+    return POM3D()
+  else:
+    exit("Invalid model name : " + name)
+
+
 if __name__ == "__main__":
-  # args = sys.argv
-  # if len(args) != 2:
-  #   print("Optimizer not mentioned")
-  #   exit()
-  # if args[1] == "gale":
-  #   _run_once(GALE_P)
-  # elif args[1] == "de":
-  #   _run_once(DE_P)
-  _run_parallel()
+  args = sys.argv
+  if len(args) != 3:
+    print("Optimizer or model not mentioned")
+    exit()
+  if args[1] == "gale":
+    optimizer = GALE_P
+  elif args[1] == "de":
+    optimizer = DE_P
+  else:
+    exit("Invalid optimizer " + args[1])
+  model =get_model(args[2])
+  _run_once(optimizer, model)
