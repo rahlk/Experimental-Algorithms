@@ -18,7 +18,7 @@ class POM3A(Problem):
     lows = [0.1, 0.82, 2, 0.40, 1, 1, 0, 0, 1]
     ups = [0.9, 1.20, 10, 0.70, 100, 50, 4, 5, 44]
     self.decisions = [Decision(names[i], lows[i], ups[i]) for i in range(len(names))]
-    self.objectives = [Objective("Cost", True, 0), Objective("Score", False, 0, 1),
+    self.objectives = [Objective("Cost", True, 0, 10000), Objective("Score", False, 0, 1),
                        Objective("Completion", False, 0, 1), Objective("Idle", True, 0, 1)]
 
   def evaluate(self, decisions):
