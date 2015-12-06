@@ -12,6 +12,7 @@ from problems.pom3.pom3a import POM3A
 from problems.pom3.pom3b import POM3B
 from problems.pom3.pom3c import POM3C
 from problems.pom3.pom3d import POM3D
+from problems.xomo.xomo import XOMO
 
 COMM = MPI.COMM_WORLD
 RANK = COMM.rank
@@ -105,6 +106,8 @@ def get_model(name):
     return POM3C()
   elif name == "pom3d":
     return POM3D()
+  elif name == "xomo":
+    return XOMO()
   else:
     exit("Invalid model name : " + name)
 
