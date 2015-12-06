@@ -9,7 +9,11 @@ Traceback (most recent call last):
     node = Node(self.problem, pop, self.settings.pop_size).divide(sqrt(pop))
   File "/home/george2/Experimental-Algorithms/Code/algorithms/serial/gale/where.py", line 277, in divide
     .divide(threshold, abort=east_abort)
-  File "/home/george2/Experimental-Algorithms/Code/algorithms/serial/gale/where.py", line 262, in divide
+  File "/home/george2/Experimental-Algorithms/Code/algorithms/serial/gale/where.py", line 275, in divide
+    .divide(threshold, abort=west_abort)
+  File "/home/george2/Experimental-Algorithms/Code/algorithms/serial/gale/where.py", line 277, in divide
+    .divide(threshold, abort=east_abort)
+  File "/home/george2/Experimental-Algorithms/Code/algorithms/serial/gale/where.py", line 267, in divide
     maxs=[o.high for o in objs])
   File "/home/george2/Experimental-Algorithms/Code/algorithms/serial/algorithm.py", line 103, in dominates_continuous
     return sum([math.exp((x2i - x1i)/o) for x1i, x2i in zip(x1,x2)])/o
@@ -25,7 +29,7 @@ Traceback (most recent call last):
     node = Node(self.problem, pop, self.settings.pop_size).divide(sqrt(pop))
   File "/home/george2/Experimental-Algorithms/Code/algorithms/serial/gale/where.py", line 277, in divide
     .divide(threshold, abort=east_abort)
-  File "/home/george2/Experimental-Algorithms/Code/algorithms/serial/gale/where.py", line 262, in divide
+  File "/home/george2/Experimental-Algorithms/Code/algorithms/serial/gale/where.py", line 267, in divide
     maxs=[o.high for o in objs])
   File "/home/george2/Experimental-Algorithms/Code/algorithms/serial/algorithm.py", line 103, in dominates_continuous
     return sum([math.exp((x2i - x1i)/o) for x1i, x2i in zip(x1,x2)])/o

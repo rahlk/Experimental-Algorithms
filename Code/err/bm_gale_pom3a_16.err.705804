@@ -14,3 +14,4 @@ Traceback (most recent call last):
   File "/home/george2/Experimental-Algorithms/Code/algorithms/serial/algorithm.py", line 103, in dominates_continuous
     return sum([math.exp((x2i - x1i)/o) for x1i, x2i in zip(x1,x2)])/o
 OverflowError: math range error
+User defined signal 2
