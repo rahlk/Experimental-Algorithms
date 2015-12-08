@@ -10,7 +10,7 @@ set title "Speedups"
 
 set xlabel " Processors "
 
-set ylabel " Speedup (sec) "
+set ylabel " Speedup "
 
 set xrange [0:17]
 

@@ -1,10 +1,10 @@
 # For PNG
 set terminal png
-set output "XOMO_speedups.png"
+set output "XOMO_DE_runtimes.png"
 
 # For EPS
 # set terminal eps
-# set output "XOMO_speedups.eps"
+# set output "XOMO_DE_runtimes.eps"
 
 set title "Runtimes"
 
@@ -16,6 +16,4 @@ set xrange [0:17]
 
 set datafile separator ","
 
-set key left top
-
-plot for [col=4:5] "XOMO_GALEvsDE.csv" using 1:col with lines title columnheader
+plot for [col=3:3] "XOMO_GALEvsDE.csv" using 1:col with lines title columnheader
