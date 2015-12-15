@@ -1,0 +1,45 @@
+Traceback (most recent call last):
+  File "runner.py", line 124, in <module>
+    _run_once(optimizer, model)
+  File "runner.py", line 68, in _run_once
+    goods = optimizer.run(opt)
+  File "/home/george2/Experimental-Algorithms/Code/algorithms/parallel/gale/gale.py", line 177, in run
+    selectees, evals =  algo.select(population)
+  File "/home/george2/Experimental-Algorithms/Code/algorithms/parallel/gale/gale.py", line 41, in _select
+    node = Node(self.problem, pop, self.settings.pop_size).divide(sqrt(pop))
+  File "/home/george2/Experimental-Algorithms/Code/algorithms/serial/gale/where.py", line 277, in divide
+    .divide(threshold, abort=east_abort)
+  File "/home/george2/Experimental-Algorithms/Code/algorithms/serial/gale/where.py", line 267, in divide
+    maxs=[o.high for o in objs])
+  File "/home/george2/Experimental-Algorithms/Code/algorithms/serial/algorithm.py", line 103, in dominates_continuous
+    return sum([math.exp((x2i - x1i)/o) for x1i, x2i in zip(x1,x2)])/o
+OverflowError: math range error
+Traceback (most recent call last):
+  File "runner.py", line 124, in <module>
+    _run_once(optimizer, model)
+  File "runner.py", line 68, in _run_once
+    goods = optimizer.run(opt)
+  File "/home/george2/Experimental-Algorithms/Code/algorithms/parallel/gale/gale.py", line 177, in run
+    selectees, evals =  algo.select(population)
+  File "/home/george2/Experimental-Algorithms/Code/algorithms/parallel/gale/gale.py", line 41, in _select
+    node = Node(self.problem, pop, self.settings.pop_size).divide(sqrt(pop))
+  File "/home/george2/Experimental-Algorithms/Code/algorithms/serial/gale/where.py", line 262, in divide
+    maxs=[o.high for o in objs])
+  File "/home/george2/Experimental-Algorithms/Code/algorithms/serial/algorithm.py", line 103, in dominates_continuous
+    return sum([math.exp((x2i - x1i)/o) for x1i, x2i in zip(x1,x2)])/o
+OverflowError: math range error
+Traceback (most recent call last):
+  File "runner.py", line 124, in <module>
+    _run_once(optimizer, model)
+  File "runner.py", line 68, in _run_once
+    goods = optimizer.run(opt)
+  File "/home/george2/Experimental-Algorithms/Code/algorithms/parallel/gale/gale.py", line 177, in run
+    selectees, evals =  algo.select(population)
+  File "/home/george2/Experimental-Algorithms/Code/algorithms/parallel/gale/gale.py", line 41, in _select
+    node = Node(self.problem, pop, self.settings.pop_size).divide(sqrt(pop))
+  File "/home/george2/Experimental-Algorithms/Code/algorithms/serial/gale/where.py", line 262, in divide
+    maxs=[o.high for o in objs])
+  File "/home/george2/Experimental-Algorithms/Code/algorithms/serial/algorithm.py", line 103, in dominates_continuous
+    return sum([math.exp((x2i - x1i)/o) for x1i, x2i in zip(x1,x2)])/o
+OverflowError: math range error
+User defined signal 2

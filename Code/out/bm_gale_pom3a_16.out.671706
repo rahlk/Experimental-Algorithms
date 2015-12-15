@@ -1,0 +1,40 @@
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@n2e2-10>
+Subject: Job 671706: <sh benchmark.sh 16 gale pom3a> Exited
+
+Job <sh benchmark.sh 16 gale pom3a> was submitted from host <login01.hpc.ncsu.edu> by user <george2> in cluster <henry2>.
+Job was executed on host(s) <8*n2e2-10>, in queue <single_chassis>, as user <george2> in cluster <henry2>.
+                            <8*n2e2-5>
+</home/george2> was used as the home directory.
+</home/george2/Experimental-Algorithms/Code> was used as the working directory.
+Started at Thu Dec  3 16:43:42 2015
+Results reported at Fri Dec  4 12:43:56 2015
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+sh benchmark.sh 16 gale pom3a
+------------------------------------------------------------
+
+TERM_RUNLIMIT: job killed after reaching LSF run time limit.
+Exited with exit code 140.
+
+Resource usage summary:
+
+    CPU time   :   1107.62 sec.
+    Max Memory :       164 MB
+    Max Swap   :      3371 MB
+
+    Max Processes  :        12
+    Max Threads    :        55
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <err/bm_gale_pom3a_16.err.671706> for stderr output of this job.
+

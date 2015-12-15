@@ -38,6 +38,8 @@ def norm(x, low, high):
   :param high: Maximum value
   :return: Normalized value
   """
+  if low is None or high is None:
+    return x
   nor = (x - low)/(high - low + EPS)
   if nor > 1:
     return 1
